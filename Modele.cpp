@@ -18,11 +18,12 @@ void Modele::initializeSimulation()
 	LapinFemelle l2;
 	while(i < temps_ && l.getAge() < l.getDureeVie())
 	{
+		std::cout << l.toString() << std::endl;
+		std::cout << l2.toString() << std::endl;
+		
 		l.incrementAge();
 		l2.incrementAge();
 		
-		std::cout << l.toString() << std::endl;
-		std::cout << l2.toString() << std::endl;
 		++i;
 	}
 }
@@ -56,20 +57,20 @@ int  Modele::rejectionNormalLaw(int mean , int  stdDev)
 	return (choix >= 1 ? nb1 : nb2);
 }
 
-int Modele::histogram(int nbClasses, int * pourcentages)
+int Modele::histogram(int nbClasses, float * pourcentages)
 {
 	int res = -1;
 	if(nbClasses > 0)
-	{
-		int tab [nbClasses];
-		
-		int nb = randomFloat(0,1);
-		int i = 0, fin = 0, cumul = 0;
+	{		
+		float nb = randomFloat(0,1);
+		int i = 0, fin = 0;
+		float cumul;
 		
 		while(i < nbClasses && !fin)
 		{			
+			
 			cumul += pourcentages[i];
-			if(nb < pourcentages[i])
+			if(nb < cumul)
 			{
 				res = i; //indice d'un tableau[i] = classe
 				fin = 1;

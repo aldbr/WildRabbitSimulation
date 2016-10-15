@@ -14,7 +14,7 @@ class Lapin
 	Lapin(); //duree de vie init ici
 	
 	int getAge();
-	void incrementAge();
+	virtual void incrementAge();
 	
 	int getDureeVie();
 	

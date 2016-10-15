@@ -15,7 +15,7 @@ class Modele
 	public :
 	Modele(int temps);
 	static int rejectionNormalLaw(int mean , int  stdDev);
-	static int histogram(int nbClasses, int * pourcentages);
+	static int histogram(int nbClasses, float * pourcentages);
 	void initializeSimulation();
 };
 

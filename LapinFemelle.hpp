@@ -23,7 +23,8 @@ class LapinFemelle : public Lapin
 	int getNbPorteesMax();
 	void setNbPorteesMax();
 	
-	virtual bool isMature();
+	void incrementAge();
+	bool isMature();
 	
 	std::string toString();	
 };
