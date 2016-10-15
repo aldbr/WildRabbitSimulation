@@ -1,14 +1,21 @@
 #include "LapinFemelle.hpp"
 #include "Modele.hpp"
+#include <iostream>
 
 LapinFemelle::LapinFemelle() : Lapin(), enGestation_(false), nbPortees_(0) 
 {
 	setNbPorteesMax();
 }
 
-bool LapinFemelle::inGestation()
+bool LapinFemelle::setGestation()
 {
-	return (enGestation_ ? true : false);
+	std::cout << "gestation : " << enGestation_ << "nbPortees :" << nbPortees_ << std::endl; 
+	if(!enGestation_ && nbPortees_ < nbPorteesMax_ && isMature())
+	{
+			enGestation_ = true;
+			++nbPortees_;
+			std::cout << "gestation : " << enGestation_ << "nbPortees :" << nbPortees_ << std::endl;
+	}
 }
 	
 int LapinFemelle::getNbPortees()
@@ -30,6 +37,7 @@ void LapinFemelle::setNbPorteesMax()
 {
 	float pourcentageChancesPortees [] = {0.1, 0.1, 0.2, 0.2, 0.2, 0.1, 0.1};
 	nbPorteesMax_ = Modele::histogram(7, pourcentageChancesPortees)+1;
+	nbPortees_ = 0;
 }
 
 bool LapinFemelle::isMature()
@@ -42,16 +50,23 @@ void LapinFemelle::incrementAge()
 	++age_;
 	if((age_ % 12) == 0)
 	{
-		setNbPorteesMax();
+		setNbPorteesMax(); //12 mois en fonction de l'age du lapin
 	}
+}
+
+void LapinFemelle::donnerNaissance()
+{
+	enGestation_ = 0; //attribut ageGestation == 1 pour accoucher ou incrementAge entre accoupler et donnernaissance ?
 }
 
 std::string LapinFemelle::toString()
 {
 	std::ostringstream oss;
 	oss << "Femelle :" << std::endl;
-	oss << (isMature() ? "Mature" : "") << " duree de vie : " << dureeVie_ << " age : " << age_ << std::endl;
+	oss << (isMature() ? "Mature " : "") << "Duree de vie : " << dureeVie_ << " Age : " << age_ << std::endl;
+	oss << "En gestation : " << enGestation_ << std::endl;
 	oss << "Nombre de portées pour l'année : " << nbPorteesMax_ << std::endl;
+	oss << "Nombre de portées effective sur l'année : " << nbPortees_ << std::endl;
 	oss << std::endl;
 	return oss.str();
 }

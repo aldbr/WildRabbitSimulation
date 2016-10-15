@@ -24,6 +24,8 @@ void Modele::initializeSimulation()
 		l.incrementAge();
 		l2.incrementAge();
 		
+		l.accoupler(l2);
+		
 		++i;
 	}
 }
@@ -64,7 +66,7 @@ int Modele::histogram(int nbClasses, float * pourcentages)
 	{		
 		float nb = randomFloat(0,1);
 		int i = 0, fin = 0;
-		float cumul;
+		float cumul = 0;
 		
 		while(i < nbClasses && !fin)
 		{			

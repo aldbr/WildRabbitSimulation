@@ -9,13 +9,10 @@ class LapinFemelle : public Lapin
 	int nbPortees_;
 	int nbPorteesMax_;
 	
-	
-	
-	
 	public :
 	LapinFemelle();
 	
-	bool inGestation();
+	bool setGestation();
 	
 	int getNbPortees();
 	void incrementNbPortees();
@@ -25,6 +22,8 @@ class LapinFemelle : public Lapin
 	
 	void incrementAge();
 	bool isMature();
+	
+	void donnerNaissance();
 	
 	std::string toString();	
 };
