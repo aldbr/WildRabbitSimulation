@@ -9,6 +9,8 @@
 Modele::Modele(int temps) : temps_(temps)
 {
 	srand(time(NULL));
+	
+	lapins_(2);
 }
 
 void Modele::initializeSimulation()
@@ -16,15 +18,20 @@ void Modele::initializeSimulation()
 	int i = 0;
 	LapinMale l;
 	LapinFemelle l2;
+	
+	lapins_.push_back(l);  
+	
 	while(i < temps_ && l.getAge() < l.getDureeVie())
-	{
+	{	
+		l.accoupler(l2);
+		
 		std::cout << l.toString() << std::endl;
 		std::cout << l2.toString() << std::endl;
 		
 		l.incrementAge();
 		l2.incrementAge();
 		
-		l.accoupler(l2);
+		l2.donnerNaissance();
 		
 		++i;
 	}

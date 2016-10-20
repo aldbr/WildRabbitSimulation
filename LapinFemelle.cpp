@@ -9,12 +9,10 @@ LapinFemelle::LapinFemelle() : Lapin(), enGestation_(false), nbPortees_(0)
 
 bool LapinFemelle::setGestation()
 {
-	std::cout << "gestation : " << enGestation_ << "nbPortees :" << nbPortees_ << std::endl; 
 	if(!enGestation_ && nbPortees_ < nbPorteesMax_ && isMature())
 	{
 			enGestation_ = true;
 			++nbPortees_;
-			std::cout << "gestation : " << enGestation_ << "nbPortees :" << nbPortees_ << std::endl;
 	}
 }
 	
@@ -56,7 +54,8 @@ void LapinFemelle::incrementAge()
 
 void LapinFemelle::donnerNaissance()
 {
-	enGestation_ = 0; //attribut ageGestation == 1 pour accoucher ou incrementAge entre accoupler et donnernaissance ?
+	enGestation_ = 0; //incrementAge entre accoupler et donnernaissance
+	
 }
 
 std::string LapinFemelle::toString()
