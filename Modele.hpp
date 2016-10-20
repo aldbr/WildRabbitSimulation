@@ -6,7 +6,7 @@
 
 class Modele 
 {
-	std::vector<Lapin> lapins_(5000);
+	//std::vector<Lapin> lapins_(5000);
 	
 	int temps_;
 	
