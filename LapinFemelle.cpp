@@ -64,9 +64,9 @@ void LapinFemelle::donnerNaissance()
 		for(int i=0; i<nbLapins;++i)
 		{
 			if(sexe <= 1)
-				Modele::lapins_.push_front(new LapinMale);
+				Modele::lapinsMale_.push_front(new LapinMale);
 			else
-				Modele::lapins_.push_front(new LapinFemelle);
+				Modele::lapinsFemelle_.push_front(new LapinFemelle);
 		}
 	}
 	enGestation_ = 0; //incrementAge entre accoupler et donnernaissance

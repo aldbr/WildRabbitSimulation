@@ -7,6 +7,7 @@
 #include <ctime>
 #include <cstdlib>
 
+#include <typeinfo>
 
 Modele::Modele(int temps) : temps_(temps)
 {
@@ -14,38 +15,91 @@ Modele::Modele(int temps) : temps_(temps)
 	
 }
 
-/*
-void verifierEtatLapins()
+
+void Modele::verifierEtatLapins()
 {
-	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
-		oss << (*it)->toString();
-}*/
+	
+	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
+		if((*it)->getAge() == (*it)->getDureeVie())
+		{
+			delete (*it);
+			lapinsMale_.erase(it);
+		}
+	
+	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+		if((*it)->getAge() == (*it)->getDureeVie())
+		{
+			delete (*it);
+			lapinsFemelle_.erase(it);
+		}
+		
+}
+
+void Modele::detruireModele()
+{
+	while(!lapinsFemelle_.empty())
+	{
+		delete lapinsFemelle_.front();
+		lapinsFemelle_.pop_front();
+	}
+	while(!lapinsMale_.empty())
+	{
+		delete lapinsMale_.front();
+		lapinsMale_.pop_front();
+	}	
+}
+
+void Modele::accouplement()
+{
+	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	{
+		lapinsMale_.back()->accoupler(**it);
+	}	
+}
+
+void Modele::incrementerAge()
+{
+	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	{
+		(*it)->incrementAge();
+	}	
+	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
+	{
+		(*it)->incrementAge();
+	}	
+}
+
+void Modele::naissance()
+{
+	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	{
+		(*it)->donnerNaissance();
+	}	
+}
+
 
 void Modele::initializeSimulation()
 {
 	int i = 0;
-	
-	LapinMale l;
-	LapinFemelle l2;
-	
-	lapins_.push_front(&l);
-	lapins_.push_front(&l2);
+		
+	lapinsMale_.push_front(new LapinMale);
+	lapinsFemelle_.push_front(new LapinFemelle);
 	
 	while(i < temps_)
-	{	
-		
-		
-		l.accoupler(l2);
+	{		
+		accouplement();
 		
 		std::cout << toString(i);
 		
-		l.incrementAge();
-		l2.incrementAge();
+		incrementerAge();
 		
-		l2.donnerNaissance();
+		naissance();
+		
+		//verifierEtatLapins();
 		
 		++i;
 	}
+	detruireModele();
 }
 
 float Modele::randomFloat(float a, float b) {	
@@ -105,13 +159,48 @@ int Modele::histogram(int nbClasses, float * pourcentages)
 std::string Modele::toString(int i)
 {
 	std::ostringstream oss;
-	oss << "Mois " <<  i << " : " << std::endl;
-	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
+	oss << "Mois " <<  i << " : " << lapinsFemelle_.size() + lapinsMale_.size() << std::endl;
+	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
+		oss << (*it)->toString();
+	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
 		oss << (*it)->toString();
 	return oss.str();
 }
 
-std::list<Lapin *> Modele::lapins_;
+std::list<LapinMale *> Modele::lapinsMale_;
+std::list<LapinFemelle *> Modele::lapinsFemelle_;
+
+
+
+
+
+
+
+
+/* si on avait eu une liste regroupant lapin male et femelle : algos de recherche du type dans la liste
+const LapinMale* Modele::rechercheMale()
+{
+	LapinMale  *l = 0;
+	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
+		if(typeid(**it).name() == "9LapinMale")
+		{
+			l = (*it); 
+		}
+	return l;
+		
+}
+
+const LapinFemelle* Modele::rechercheFemelle()
+{
+	LapinFemelle  *l = 0;
+	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
+		if(typeid(**it).name() == "12LapinFemelle")
+		{
+			l = (*it); 
+		}
+	return l;	
+}
+*/
 
 
 

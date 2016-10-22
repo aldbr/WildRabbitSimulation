@@ -1,13 +1,21 @@
 #ifndef MODELE_HPP
 #define MODELE_HPP
 
-#include "Lapin.hpp"
+#include "LapinMale.hpp"
+#include "LapinFemelle.hpp"
+
 #include <list>
 #include <string>
 
 class Modele 
 {
 	int temps_;	
+	
+	void verifierEtatLapins();
+	void detruireModele();
+	void accouplement();
+	void incrementerAge();
+	void naissance();
 	
 	public :
 	Modele(int temps);
@@ -17,7 +25,8 @@ class Modele
 	void initializeSimulation();
 	std::string toString(int i);
 	
-	static std::list<Lapin*> lapins_;
+	static std::list<LapinMale*> lapinsMale_;
+	static std::list<LapinFemelle*> lapinsFemelle_;
 };
 
 #endif
