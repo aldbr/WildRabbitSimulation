@@ -3,7 +3,7 @@
 
 int main(void)
 {
-	Modele m(240);
+	Modele m(12);
 	m.initializeSimulation();
 	return 0;
 }

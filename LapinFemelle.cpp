@@ -1,4 +1,5 @@
 #include "LapinFemelle.hpp"
+#include "LapinMale.hpp"
 #include "Modele.hpp"
 #include <iostream>
 
@@ -54,6 +55,20 @@ void LapinFemelle::incrementAge()
 
 void LapinFemelle::donnerNaissance()
 {
+	if(enGestation_)
+	{
+		float pourcentageChancesNbEnfants [] = {0.025, 0.025, 0.025, 0.2, 0.2, 0.2, 0.175, 0.025, 0.025, 0.025, 0.025, 0.025, 0.25};
+		int nbLapins = Modele::histogram(12, pourcentageChancesNbEnfants);
+		float sexe = Modele::randomFloat(0,2);
+		
+		for(int i=0; i<nbLapins;++i)
+		{
+			if(sexe <= 1)
+				Modele::lapins_.push_front(new LapinMale);
+			else
+				Modele::lapins_.push_front(new LapinFemelle);
+		}
+	}
 	enGestation_ = 0; //incrementAge entre accoupler et donnernaissance
 	
 }

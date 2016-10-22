@@ -2,21 +2,22 @@
 #define MODELE_HPP
 
 #include "Lapin.hpp"
-#include <vector>
+#include <list>
+#include <string>
 
 class Modele 
 {
-	//std::vector<Lapin> lapins_(5000);
-	
-	int temps_;
-	
-	static float randomFloat(float a, float b);
+	int temps_;	
 	
 	public :
 	Modele(int temps);
+	static float randomFloat(float a, float b);
 	static int rejectionNormalLaw(int mean , int  stdDev);
 	static int histogram(int nbClasses, float * pourcentages);
 	void initializeSimulation();
+	std::string toString(int i);
+	
+	static std::list<Lapin*> lapins_;
 };
 
 #endif

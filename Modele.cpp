@@ -2,9 +2,11 @@
 #include "LapinMale.hpp"
 #include "LapinFemelle.hpp"
 #include <iostream>
+#include <sstream>
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
+
 
 Modele::Modele(int temps) : temps_(temps)
 {
@@ -12,20 +14,30 @@ Modele::Modele(int temps) : temps_(temps)
 	
 }
 
+/*
+void verifierEtatLapins()
+{
+	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
+		oss << (*it)->toString();
+}*/
+
 void Modele::initializeSimulation()
 {
 	int i = 0;
+	
 	LapinMale l;
 	LapinFemelle l2;
 	
-	//lapins_.push_back(l);  
+	lapins_.push_front(&l);
+	lapins_.push_front(&l2);
 	
-	while(i < temps_ && l.getAge() < l.getDureeVie())
+	while(i < temps_)
 	{	
+		
+		
 		l.accoupler(l2);
 		
-		std::cout << l.toString() << std::endl;
-		std::cout << l2.toString() << std::endl;
+		std::cout << toString(i);
 		
 		l.incrementAge();
 		l2.incrementAge();
@@ -89,6 +101,17 @@ int Modele::histogram(int nbClasses, float * pourcentages)
 	return res;
 	
 }
+
+std::string Modele::toString(int i)
+{
+	std::ostringstream oss;
+	oss << "Mois " <<  i << " : " << std::endl;
+	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
+		oss << (*it)->toString();
+	return oss.str();
+}
+
+std::list<Lapin *> Modele::lapins_;
 
 
 
