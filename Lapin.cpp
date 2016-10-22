@@ -5,7 +5,7 @@
 
 Lapin::Lapin() : age_(0)
 {
-	dureeVie_ = Modele::rejectionNormalLaw(9,2) * 12; //la méthode gaussienne est peut être inadapté ici : beaucoup meurent très jeune dans la nature
+	dureeVie_ = Modele::rejectionNormalLaw(3,2) * 12; //la méthode gaussienne est peut être inadapté ici : beaucoup meurent très jeune dans la nature
 	
 }
 

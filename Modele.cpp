@@ -20,17 +20,19 @@ void Modele::verifierEtatLapins()
 {
 	
 	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
-		if((*it)->getAge() == (*it)->getDureeVie())
+		if((*it)->getAge() >= (*it)->getDureeVie())
 		{
 			delete (*it);
 			lapinsMale_.erase(it);
+			--it;
 		}
 	
 	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
-		if((*it)->getAge() == (*it)->getDureeVie())
+		if((*it)->getAge() >= (*it)->getDureeVie())
 		{
 			delete (*it);
 			lapinsFemelle_.erase(it);
+			--it;
 		}
 		
 }
@@ -95,10 +97,15 @@ void Modele::initializeSimulation()
 		
 		naissance();
 		
-		//verifierEtatLapins();
+		verifierEtatLapins();
 		
 		++i;
 	}
+	
+	std::cout << "Nombre de males : "<< lapinsMale_.size() << std::endl;
+	std::cout << "Nombre de femelles : "<< lapinsFemelle_.size() << std::endl;
+	
+	
 	detruireModele();
 }
 
@@ -161,9 +168,9 @@ std::string Modele::toString(int i)
 	std::ostringstream oss;
 	oss << "Mois " <<  i << " : " << lapinsFemelle_.size() + lapinsMale_.size() << std::endl;
 	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
-		oss << (*it)->toString();
+		oss << i << " - " << (*it)->toString();
 	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
-		oss << (*it)->toString();
+		oss << i << " - " << (*it)->toString();
 	return oss.str();
 }
 
