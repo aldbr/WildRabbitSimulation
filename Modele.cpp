@@ -2,6 +2,7 @@
 #include "LapinMale.hpp"
 #include "LapinFemelle.hpp"
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <cmath>
 #include <ctime>
@@ -87,19 +88,29 @@ void Modele::initializeSimulation()
 	lapinsMale_.push_front(new LapinMale);
 	lapinsFemelle_.push_front(new LapinFemelle);
 	
-	while(i < temps_)
-	{		
-		accouplement();
-		
-		std::cout << toString(i);
-		
-		incrementerAge();
-		
-		naissance();
-		
-		verifierEtatLapins();
-		
-		++i;
+	std::ofstream fichier("simulation.csv");
+	if (!fichier.fail()) {
+		 
+		while(i < temps_)
+		{		
+			accouplement();
+			
+			std::cout << toString(i);
+			
+			int sizeM = lapinsMale_.size();
+			int sizeF = lapinsFemelle_.size();
+			int sizeT = sizeM+sizeF;
+			fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeT << std::endl;
+			
+			incrementerAge();
+			
+			naissance();
+			
+			verifierEtatLapins();
+			
+			++i;
+		}
+		fichier.close();
 	}
 	
 	std::cout << "Nombre de males : "<< lapinsMale_.size() << std::endl;
@@ -167,10 +178,10 @@ std::string Modele::toString(int i)
 {
 	std::ostringstream oss;
 	oss << "Mois " <<  i << " : " << lapinsFemelle_.size() + lapinsMale_.size() << std::endl;
-	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
+	/*for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
 		oss << i << " - " << (*it)->toString();
 	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
-		oss << i << " - " << (*it)->toString();
+		oss << i << " - " << (*it)->toString();*/
 	return oss.str();
 }
 
