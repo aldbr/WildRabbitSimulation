@@ -12,6 +12,9 @@ class LapinMale : public Lapin
 	void accoupler(LapinFemelle& f);
 	
 	std::string toString();
+	
+	void reinit();	
+
 };
 
 #endif

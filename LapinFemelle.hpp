@@ -6,8 +6,8 @@
 class LapinFemelle : public Lapin
 {
 	bool enGestation_;
-	int nbPortees_;
-	int nbPorteesMax_;
+	short int nbPortees_;
+	short int nbPorteesMax_;
 	
 	public :
 	LapinFemelle();
@@ -23,9 +23,11 @@ class LapinFemelle : public Lapin
 	void incrementAge();
 	bool isMature();
 	
-	void donnerNaissance();
+	int donnerNaissance();
 	
-	std::string toString();	
+	std::string toString();
+	
+	void reinit();	
 };
 
 #endif

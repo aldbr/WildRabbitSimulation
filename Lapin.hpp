@@ -7,20 +7,17 @@
 class Lapin
 {
 	protected :
-	int age_;
-	int dureeVie_;
+	short int age_;
+	short int dureeVie_;
 		
 	public :
 	Lapin(); //duree de vie init ici
 	
 	int getAge();
-	virtual void incrementAge();
+	void incrementAge();
 	
 	int getDureeVie();
-	
-	virtual bool isMature() = 0;
-	
-	virtual std::string toString() = 0;
+	void setDureeVie(int minAn);
 };
 
 #endif

@@ -7,117 +7,152 @@
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
-
+#include "LapinMale.hpp"
+#include "LapinFemelle.hpp"
 #include <typeinfo>
+
 
 Modele::Modele(int temps) : temps_(temps)
 {
+	std::cout << "constructeur" << std::endl;
 	srand(time(NULL));
-	
+	lapinsMale_ = new LapinMale[TMAX];
+	lapinsFemelle_ = new LapinFemelle[TMAX];
 }
 
+Modele::~Modele()
+{
+	std::cout << "destructeur" << std::endl;
+	delete [] lapinsMale_;
+	delete [] lapinsFemelle_;
+	
+	lapinsMortsMale_.clear();
+	lapinsMortsFemelle_.clear();
+	tLogiqueFemelle = 1;
+	tLogiqueMale = 1;
+}
 
 void Modele::verifierEtatLapins()
 {
-	
-	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
-		if((*it)->getAge() >= (*it)->getDureeVie())
+	int cpt = 0;
+	for (int i=0; i<tLogiqueMale;++i)
+		if(lapinsMale_[i].getAge() == lapinsMale_[i].getDureeVie())
 		{
-			delete (*it);
-			lapinsMale_.erase(it);
-			--it;
+			lapinsMortsMale_.push_front(&lapinsMale_[i]);
+			++cpt;
 		}
 	
-	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
-		if((*it)->getAge() >= (*it)->getDureeVie())
+	for (int i=0; i<tLogiqueFemelle;++i)
+		if(lapinsFemelle_[i].getAge() == lapinsFemelle_[i].getDureeVie())
 		{
-			delete (*it);
-			lapinsFemelle_.erase(it);
-			--it;
+			lapinsMortsFemelle_.push_front(&lapinsFemelle_[i]);
+			++cpt;
 		}
-		
+	std::cout << "Mort = " << cpt << std::endl;
 }
 
 void Modele::detruireModele()
 {
-	while(!lapinsFemelle_.empty())
+	while(!lapinsMortsMale_.empty())
 	{
-		delete lapinsFemelle_.front();
-		lapinsFemelle_.pop_front();
+		delete lapinsMortsMale_.front();
+		lapinsMortsMale_.pop_front();
 	}
-	while(!lapinsMale_.empty())
+	while(!lapinsMortsFemelle_.empty())
 	{
-		delete lapinsMale_.front();
-		lapinsMale_.pop_front();
-	}	
+		delete lapinsMortsFemelle_.front();
+		lapinsMortsFemelle_.pop_front();
+	}
 }
 
 void Modele::accouplement()
 {
-	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	int j=0;
+	bool fin = false;
+		
+	while(j<tLogiqueMale && !fin)
 	{
-		lapinsMale_.back()->accoupler(**it);
+		if(lapinsMale_[j].getAge() < lapinsMale_[j].getDureeVie())
+		{
+			fin = true;
+		} 
+		else 
+		{
+			j++;
+		}
+	}
+	if(j != tLogiqueMale)
+	{
+		for(int i=0; i<tLogiqueFemelle; ++i)
+		{
+			if(lapinsFemelle_[i].getAge() < lapinsFemelle_[i].getDureeVie())
+				lapinsMale_[j].accoupler(lapinsFemelle_[i]);
+		}
 	}	
 }
 
 void Modele::incrementerAge()
 {
-	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	for(int i=0;i<tLogiqueMale;++i)
 	{
-		(*it)->incrementAge();
+		lapinsMale_[i].incrementAge();
 	}	
-	for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
+	for(int i=0;i<tLogiqueFemelle;++i)
 	{
-		(*it)->incrementAge();
+		lapinsFemelle_[i].incrementAge();
 	}	
 }
 
 void Modele::naissance()
 {
-	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
+	int cpt = 0;
+	for(int i=0;i<tLogiqueFemelle;++i)
 	{
-		(*it)->donnerNaissance();
-	}	
+		cpt += lapinsFemelle_[i].donnerNaissance();
+	}
 }
 
 
-void Modele::initializeSimulation()
+int Modele::initializeSimulation()
 {
 	int i = 0;
 		
-	lapinsMale_.push_front(new LapinMale);
-	lapinsFemelle_.push_front(new LapinFemelle);
-	
 	std::ofstream fichier("simulation.csv");
 	if (!fichier.fail()) {
-		 
+				
+		lapinsMale_[0].setDureeVie(9);
+		lapinsFemelle_[0].setDureeVie(9);
+		
 		while(i < temps_)
 		{		
-			accouplement();
+			int sizeM = tLogiqueMale - lapinsMortsMale_.size();
+			int sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
 			
-			std::cout << toString(i);
+			//std::cout << toString(i, sizeF+sizeM); 
+			std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
+			fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
 			
-			int sizeM = lapinsMale_.size();
-			int sizeF = lapinsFemelle_.size();
-			int sizeT = sizeM+sizeF;
-			fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeT << std::endl;
-			
-			incrementerAge();
-			
-			naissance();
-			
+			naissance();			
 			verifierEtatLapins();
-			
-			++i;
+			accouplement();
+						
+			incrementerAge();
+			++i;	
 		}
 		fichier.close();
 	}
+	int sizeM = tLogiqueMale - lapinsMortsMale_.size();
+	int sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
+	//std::cout << toString(i, sizeF+sizeM); 
+	std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
+	fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
+	std::cout << "Nombre de males : "<< sizeM << std::endl;
+	std::cout << "Nombre de femelles : "<< sizeF << std::endl;
 	
-	std::cout << "Nombre de males : "<< lapinsMale_.size() << std::endl;
-	std::cout << "Nombre de femelles : "<< lapinsFemelle_.size() << std::endl;
+	return sizeF+sizeM;
 	
 	
-	detruireModele();
+	//detruireModele();
 }
 
 float Modele::randomFloat(float a, float b) {	
@@ -174,51 +209,57 @@ int Modele::histogram(int nbClasses, float * pourcentages)
 	
 }
 
-std::string Modele::toString(int i)
+std::string Modele::toString(int i, int nb)
 {
 	std::ostringstream oss;
-	oss << "Mois " <<  i << " : " << lapinsFemelle_.size() + lapinsMale_.size() << std::endl;
-	/*for (std::list<LapinMale *>::iterator it=lapinsMale_.begin(); it != lapinsMale_.end(); ++it)
-		oss << i << " - " << (*it)->toString();
-	for (std::list<LapinFemelle *>::iterator it=lapinsFemelle_.begin(); it != lapinsFemelle_.end(); ++it)
-		oss << i << " - " << (*it)->toString();*/
+	oss << "Mois " <<  i << " : " << nb << std::endl;
+	for (int i=0;i<tLogiqueMale;++i)
+	{
+		if(lapinsMale_[i].getAge() <= lapinsMale_[i].getDureeVie())
+		{
+			oss << i << " - " << lapinsMale_[i].toString();
+		}
+	}
+	for (int i=0;i<tLogiqueFemelle;++i)
+	{
+		if(lapinsFemelle_[i].getAge() <= lapinsFemelle_[i].getDureeVie())
+		{
+			oss << i << " - " << lapinsFemelle_[i].toString();
+		}		
+	}
 	return oss.str();
 }
 
-std::list<LapinMale *> Modele::lapinsMale_;
-std::list<LapinFemelle *> Modele::lapinsFemelle_;
-
-
-
-
-
-
-
-
-/* si on avait eu une liste regroupant lapin male et femelle : algos de recherche du type dans la liste
-const LapinMale* Modele::rechercheMale()
+int Modele::getTMax()
 {
-	LapinMale  *l = 0;
-	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
-		if(typeid(**it).name() == "9LapinMale")
-		{
-			l = (*it); 
-		}
-	return l;
-		
+	return TMAX;
 }
 
-const LapinFemelle* Modele::rechercheFemelle()
+int Modele::getTLogiqueMale()
 {
-	LapinFemelle  *l = 0;
-	for (std::list<Lapin *>::iterator it=lapins_.begin(); it != lapins_.end(); ++it)
-		if(typeid(**it).name() == "12LapinFemelle")
-		{
-			l = (*it); 
-		}
-	return l;	
+	return tLogiqueMale;
 }
-*/
+
+void Modele::setTLogiqueMale(int nb)
+{
+	tLogiqueMale += nb;
+}
+
+int Modele::getTLogiqueFemelle()
+{
+	return tLogiqueFemelle;
+}
+
+void Modele::setTLogiqueFemelle(int nb)
+{
+	tLogiqueFemelle += nb;
+}
+
+std::list<LapinMale *> Modele::lapinsMortsMale_;
+std::list<LapinFemelle *> Modele::lapinsMortsFemelle_;
+int Modele::tLogiqueMale = 1;
+int Modele::tLogiqueFemelle = 1;
+
 
 
 
