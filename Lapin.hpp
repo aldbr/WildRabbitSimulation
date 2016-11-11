@@ -4,19 +4,47 @@
 #include <string>
 #include <sstream>
 
+/*!
+ * \brief Classe traitant le lapin de façon générale.
+ */
 class Lapin
 {
 	protected :
-	short int age_;
+
+        /*!
+         * \brief Age du lapin.
+         */
+        short int age_;
+        /*!
+         * \brief Durée de vie du lapin.
+         */
 	short int dureeVie_;
 		
 	public :
-	Lapin(); //duree de vie init ici
+        /*!
+         * \brief Constructeur de Lapin.
+         */
+        Lapin();
 	
+        /*!
+         * \brief Getter de l'âge du lapin.
+         * \return entier correspondant à l'âge du lapin
+         */
 	int getAge();
-	void incrementAge();
+        /*!
+         * \brief Incrémente l'âge du lapin.
+         */
+        void incrementAge();
 	
+        /*!
+         * \brief Getter de la durée de vie du lapin.
+         * \return entier correspondant à la durée de vie du lapin
+         */
 	int getDureeVie();
+        /*!
+         * \brief Setter de la durée de vie du lapin.
+         * \param minAn l'âge minimale en année que doit prendre le lapin
+         */
 	void setDureeVie(int minAn);
 };
 

@@ -12,17 +12,27 @@
 #include <typeinfo>
 
 
+/*!
+ * \brief Constructeur de Modèle.
+ * \par Principe :
+ * Initialisation des tableaux de lapins mâles et femelles
+ * \param temps
+ */
 Modele::Modele(int temps) : temps_(temps)
 {
-	std::cout << "constructeur" << std::endl;
-	srand(time(NULL));
 	lapinsMale_ = new LapinMale[TMAX];
 	lapinsFemelle_ = new LapinFemelle[TMAX];
 }
 
+/*!
+ * \brief Destructeur du modèle.
+ * \par Principe :
+ * Destruction des tableaux de mâles et femelles
+ * Réinitialisation à 0 des listes de lapins mâles et femelles morts
+ * Réinitialisation de la taille logique des tableaux des lapins
+ */
 Modele::~Modele()
 {
-	std::cout << "destructeur" << std::endl;
 	delete [] lapinsMale_;
 	delete [] lapinsFemelle_;
 	
@@ -32,39 +42,36 @@ Modele::~Modele()
 	tLogiqueMale = 1;
 }
 
+/*!
+ * \brief Vérification de la survie des lapins.
+ * \par Principe :
+ * Parcours des deux tableaux de lapins
+ * Si l'age du lapin courant est égal à sa durée de vie alors
+ *  Adjonction de ce lapin dans la liste de lapins morts
+ */
 void Modele::verifierEtatLapins()
 {
-	int cpt = 0;
 	for (int i=0; i<tLogiqueMale;++i)
 		if(lapinsMale_[i].getAge() == lapinsMale_[i].getDureeVie())
 		{
 			lapinsMortsMale_.push_front(&lapinsMale_[i]);
-			++cpt;
 		}
 	
 	for (int i=0; i<tLogiqueFemelle;++i)
 		if(lapinsFemelle_[i].getAge() == lapinsFemelle_[i].getDureeVie())
 		{
 			lapinsMortsFemelle_.push_front(&lapinsFemelle_[i]);
-			++cpt;
 		}
-	std::cout << "Mort = " << cpt << std::endl;
 }
 
-void Modele::detruireModele()
-{
-	while(!lapinsMortsMale_.empty())
-	{
-		delete lapinsMortsMale_.front();
-		lapinsMortsMale_.pop_front();
-	}
-	while(!lapinsMortsFemelle_.empty())
-	{
-		delete lapinsMortsFemelle_.front();
-		lapinsMortsFemelle_.pop_front();
-	}
-}
-
+/*!
+ * \brief Accouplement des mâles avec toutes les femelles disponibles.
+ * \par Principe :
+ * Recherche d'un lapin male vivant et mature
+ * Si ce lapin à été trouvé alors
+ *  Pour tous les lapins femelles vivante faire
+ *      le lapin mâle désigné s'accouple avec la femelle courante
+ */
 void Modele::accouplement()
 {
 	int j=0;
@@ -72,7 +79,7 @@ void Modele::accouplement()
 		
 	while(j<tLogiqueMale && !fin)
 	{
-		if(lapinsMale_[j].getAge() < lapinsMale_[j].getDureeVie())
+		if(lapinsMale_[j].getAge() < lapinsMale_[j].getDureeVie() && lapinsMale_[j].isMature())
 		{
 			fin = true;
 		} 
@@ -91,6 +98,12 @@ void Modele::accouplement()
 	}	
 }
 
+/*!
+ * \brief Incrément de l'âge de tous les lapins.
+ * \par Principe :
+ * Parcours des deux tableaux de lapins jusqu'au tailles logiques
+ *  Incrément de l'âge du lapin courant
+ */
 void Modele::incrementerAge()
 {
 	for(int i=0;i<tLogiqueMale;++i)
@@ -103,16 +116,34 @@ void Modele::incrementerAge()
 	}	
 }
 
+/*!
+ * \brief Naissance des lapereaux par toutes les femelles en gestation.
+ * \par Principe :
+ * Parcours du tableau de lapins femelles
+ *  La lapine courant donne naissance si elle le peut
+ */
 void Modele::naissance()
 {
-	int cpt = 0;
 	for(int i=0;i<tLogiqueFemelle;++i)
 	{
-		cpt += lapinsFemelle_[i].donnerNaissance();
+                lapinsFemelle_[i].donnerNaissance();
 	}
 }
 
-
+/*!
+ * \brief Lancement de la simulation.
+ * \par Principe :
+ * Initialisation de la durée de vie des deux premiers lapins à 9 ans (l'âge moyen)
+ * Tant que le temps n'est pas arrivé à terme faire
+ *  Ecriture du nombre de lapins mâles, femelles et total dans un fichier simulation.csv
+ *  Naissance des lapereaux
+ *  Vérification de l'état des lapins
+ *  Accouplement des lapins
+ *  Incrément de l'âge et du mois
+ * Fait
+ * Ecriture du dernier nombre de lapins dans le fichier csv
+ * \return entier représentant le nombre de lapins mâles et femelles vivant
+ */
 int Modele::initializeSimulation()
 {
 	int i = 0;
@@ -146,15 +177,20 @@ int Modele::initializeSimulation()
 	//std::cout << toString(i, sizeF+sizeM); 
 	std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
 	fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
-	std::cout << "Nombre de males : "<< sizeM << std::endl;
-	std::cout << "Nombre de femelles : "<< sizeF << std::endl;
 	
 	return sizeF+sizeM;
-	
-	
-	//detruireModele();
 }
 
+/*!
+ * \brief Génération uniforme d'un nombre pseudo-aléatoire entre deux bornes.
+ * \par Principe :
+ * Récupération d’un nombre pseudo-aléatoire à l’aide de rand()
+ * Division par le randmax pour le ramener entre 0 et 1
+ * Multiplication par la longueur entre la borne a et b
+ * \param a borne minimal
+ * \param b borne maximal
+ * \return réel représentant un nombre aléatoire
+ */
 float Modele::randomFloat(float a, float b) {	
     float random = ((float) rand()) / (float) RAND_MAX;
     float diff = b - a;
@@ -162,7 +198,12 @@ float Modele::randomFloat(float a, float b) {
     return a + r;
 }
 
-
+/*!
+ * \brief Génération d'un nombre aléatoire suivant une distribution exponentielle négative.
+ * \param mean moyenne de la loi exponentielle
+ * \param stdDev ecart type de la moyenne
+ * \return réel représentant un nombre aléatoire
+ */
 int  Modele::rejectionNormalLaw(int mean , int  stdDev)
 {
 	double   u, v, s, nb1 , nb2;
@@ -184,6 +225,20 @@ int  Modele::rejectionNormalLaw(int mean , int  stdDev)
 	return (choix >= 1 ? nb1 : nb2);
 }
 
+/*!
+ * \brief Génération d'un nombre aléatoire suivant une loi discrète.
+ * \par Principe :
+ * Tirage d’un nombre pseudo-aléatoire entre 0 et 1
+ * Initialisation d’un cumul de pourcentage à 0
+ * Tant que on a pas trouvé la classe du nombre faire
+ * Ajout d’un pourcentage au cumul selon le nombre d’observations / la somme
+ * Si le nombre est inférieur au cumul de pourcentages alors
+ * Stockage de la classe résultat
+ * Fsi
+ * \param nbClasses entier représentant le nombre de classes utilisés
+ * \param pourcentages tableaux de réels représentant des pourcentages des classes
+ * \return réel représentant la classe résultat
+ */
 int Modele::histogram(int nbClasses, float * pourcentages)
 {
 	int res = -1;
@@ -209,6 +264,15 @@ int Modele::histogram(int nbClasses, float * pourcentages)
 	
 }
 
+/*!
+ * \brief Affichage du modèle.
+ * \par Principe :
+ * Parcours des deux tableaux de lapins
+ *  Si le lapin sont vivants alors on affiche les informations du lapin courant
+ * \param i entier représentant le mois courant
+ * \param nb entier représentant le nombre de lapins total
+ * \return chaîne de caractères représentant le modèle.
+ */
 std::string Modele::toString(int i, int nb)
 {
 	std::ostringstream oss;
@@ -230,26 +294,46 @@ std::string Modele::toString(int i, int nb)
 	return oss.str();
 }
 
+/*!
+ * \brief Getter de la taille physique des tableaux de lapins.
+ * \return entier représentant la taille maximal des tableaux
+ */
 int Modele::getTMax()
 {
 	return TMAX;
 }
 
+/*!
+ * \brief Getter de la taille logique du tableau de lapins mâles.
+ * \return entier représentant la taille logique du tableau mâle
+ */
 int Modele::getTLogiqueMale()
 {
 	return tLogiqueMale;
 }
 
+/*!
+ * \brief Setter de la taille logique du tableau de lapins mâles.
+ * \param entier représentant un nombre de lapins en plus dans le tableau mâle
+ */
 void Modele::setTLogiqueMale(int nb)
 {
 	tLogiqueMale += nb;
 }
 
+/*!
+ * \brief Getter de la taille logique du tableau de lapins femelles.
+ * \return entier représentant la taille logique du tableau femelle
+ */
 int Modele::getTLogiqueFemelle()
 {
 	return tLogiqueFemelle;
 }
 
+/*!
+ * \brief Setter de la taille logique du tableau de lapins femelles.
+ * \param entier représentant un nombre de lapins en plus dans le tableau femelle
+ */
 void Modele::setTLogiqueFemelle(int nb)
 {
 	tLogiqueFemelle += nb;
@@ -257,7 +341,15 @@ void Modele::setTLogiqueFemelle(int nb)
 
 std::list<LapinMale *> Modele::lapinsMortsMale_;
 std::list<LapinFemelle *> Modele::lapinsMortsFemelle_;
+
+/*!
+ * \brief Initialisation de la taille logique du tableau de lapins mâles
+ */
 int Modele::tLogiqueMale = 1;
+
+/*!
+ * \brief Initialisation de la taille logique du tableau de lapins femelles
+ */
 int Modele::tLogiqueFemelle = 1;
 
 

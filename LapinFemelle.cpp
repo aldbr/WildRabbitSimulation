@@ -3,12 +3,23 @@
 #include "Modele.hpp"
 #include <iostream>
 
+/*!
+ * \brief Constructeur de LapinFemelle.
+ * \par Principe :
+ * Initialise un nombre de portées maximal pour sa première année
+ */
 LapinFemelle::LapinFemelle() : Lapin(), enGestation_(false), nbPortees_(0) 
 {
 	setNbPorteesMax();
 }
 
-bool LapinFemelle::setGestation()
+/*!
+ * \brief Setter du booléen de gestation.
+ * \par Principe :
+ * Si le lapin n'est pas en gestation, qu'il est mature et que son nombre de portées maximal n'est pas atteint alors
+ *  Le lapin passe en gestation, son nombre de portées courant augmente
+ */
+void LapinFemelle::setGestation()
 {
 	if(!enGestation_ && nbPortees_ < nbPorteesMax_ && isMature())
 	{
@@ -17,21 +28,38 @@ bool LapinFemelle::setGestation()
 	}
 }
 	
+/*!
+ * \brief Getter du nombre de portées.
+ * \return entier correspondant au nombre de portées de la lapine
+ */
 int LapinFemelle::getNbPortees()
 {
 	return nbPortees_;
 }
 
+/*!
+ * \brief Incrément du nombre de portées courant.
+ */
 void LapinFemelle::incrementNbPortees()
 {
 	++nbPortees_;
 }
 	
+/*!
+ * \brief Getter du nombre de portées maximal.
+ * \return le nombre de portées maximal de la lapine pour une année de sa vie
+ */
 int LapinFemelle::getNbPorteesMax()
 {
 	return nbPorteesMax_;
 }
 
+/*!
+ * \brief Setter du nombre de portées maximal.
+ * \par Principe :
+ * Tirage pseudo-aléatoire suivant une distribution discrète pour trouver un nombre de portées maximal
+ * Initialisation du nombre de portées courant à 0
+ */
 void LapinFemelle::setNbPorteesMax()
 {
 	float pourcentageChancesPortees [] = {0.1, 0.1, 0.2, 0.2, 0.2, 0.1, 0.1};
@@ -39,20 +67,52 @@ void LapinFemelle::setNbPorteesMax()
 	nbPortees_ = 0;
 }
 
+/*!
+ * \brief Réponse à la question de la maturité du lapin.
+ * \par Principe :
+ * S'il a plus de 3 mois, il est mature, sinon il ne l'est pas
+ * \return booléen représentant la réponse à sa maturité
+ */
 bool LapinFemelle::isMature()
 {
 	return (age_ < 3 ? false : true);
 }
 
+/*!
+ * \brief Incrément de l'âge de la lapine.
+ * \par Principe :
+ * Incrément de l'âge
+ * Si la lapine à pris 1 an alors
+ *  On réinitialise le nombre de portées maximal
+ */
 void LapinFemelle::incrementAge()
 {
 	++age_;
 	if((age_ % 12) == 0)
 	{
-		setNbPorteesMax(); //12 mois en fonction de l'age du lapin
+                setNbPorteesMax();
 	}
 }
 
+/*!
+ * \brief Donne naissance aux lapereaux.
+ * \par Principe :
+ * Tirage aléatoire suivant une loi discrète d'un nombre d'enfants à avoir entre 3 et 6
+ * Pour ce nombre de lapereaux faire
+ *  Tirage aléatoire pour connaître le sexe du nouveau lapereau
+ *  Selon le sexe faire
+ *      Si la liste de lapins morts du même sexe n'est pas vide alors
+ *          on prend un lapin mort et on le réinitialise
+ *          on l'enlève de la liste de lapins morts
+ *      Sinon Si on est pas à la limite de la taille physique du tableau de lapins du même sexe alors
+ *          on augmente la taille logique du tableau
+ *            Fsi
+ *      Fsi
+ * Fait
+ * Fait
+ * On indique que la période de gestation est terminé
+ * \return entier représentant le nombre de nouveaux nés
+ */
 int LapinFemelle::donnerNaissance()
 {
 	int nbLapins = 0;
@@ -98,11 +158,15 @@ int LapinFemelle::donnerNaissance()
 			}
 		}
 	}
-	enGestation_ = 0; //incrementAge entre accoupler et donnernaissance
+        enGestation_ = 0;
 	return nbLapins;
 	
 }
 
+/*!
+ * \brief Affichage du lapin femelle.
+ * \return chaîne de caractères représentant un lapin femelle
+ */
 std::string LapinFemelle::toString()
 {
 	std::ostringstream oss;
@@ -115,6 +179,14 @@ std::string LapinFemelle::toString()
 	return oss.str();
 }
 
+/*!
+ * \brief Réinitialise la durée de vie et l'âge d'un lapin ainsi que son nombre de portées.
+ * \par Principe :
+ * Initialise l'âge à 0, la gestation à false et le nombre de portées courante à 0
+ * Calcul aléatoirement un nouveau nombre de portées pour l'année
+ * Calcul aléatoirement une durée de vie normale et une durée de vie de survie
+ * Durée de vie du lapin devient la durée minimum entre la normale et la survie
+ */
 void LapinFemelle::reinit()
 {
 	age_ = 0;

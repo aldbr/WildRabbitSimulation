@@ -2,20 +2,21 @@
 #include "Modele.hpp"
 #include <ctime>
 #include <iostream>
-
+#include <cstdlib>
 #include "LapinMale.hpp"
 #include "LapinFemelle.hpp"
 
 using namespace std;
 
+
 int main(void)
 {
 	clock_t begin = clock();
-
+	srand(time(NULL));
 	int somme = 0;
 	for(int i=0; i<100; ++i)
 	{
-		Modele m(120);
+		Modele m(60);
 		somme += m.initializeSimulation();
 	}
 	std::cout << "moyenne :" << somme/100;

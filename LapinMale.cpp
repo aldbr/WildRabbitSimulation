@@ -2,17 +2,33 @@
 #include "Modele.hpp"
 
 
+/*!
+ * \brief Réponse à la question de la maturité du lapin.
+ * \par Principe :
+ * S'il a plus de 4 mois, il est mature, sinon il ne l'est pas
+ * \return booléen représentant la réponse à sa maturité
+ */
 bool LapinMale::isMature()
 {
 	return (age_ < 4 ? false : true);
 }
 
+/*!
+ * \brief Accouplement du lapin mâle avec une femelle.
+ * \par Principe :
+ * Si le lapin est mature alors la femelle passe en gestation
+ * \param f Lapine
+ */
 void LapinMale::accoupler(LapinFemelle& f)
 {
 	if(isMature())
 		f.setGestation();
 }
 
+/*!
+ * \brief Affichage du lapin mâle.
+ * \return chaîne de caractères représentant un lapin mâle
+ */
 std::string LapinMale::toString()
 {
 	std::ostringstream oss;
@@ -22,6 +38,13 @@ std::string LapinMale::toString()
 	return oss.str();
 }
 
+/*!
+ * \brief Réinitialise la durée de vie et l'âge d'un lapin.
+ * \par Principe :
+ * Initialise l'âge à 0
+ * Calcul aléatoirement une durée de vie normale et une durée de vie de survie
+ * Durée de vie du lapin devient la durée minimum entre la normale et la survie
+ */
 void LapinMale::reinit()
 {
 	age_ = 0;
