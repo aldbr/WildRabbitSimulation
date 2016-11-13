@@ -49,19 +49,26 @@ Modele::~Modele()
  * Si l'age du lapin courant est égal à sa durée de vie alors
  *  Adjonction de ce lapin dans la liste de lapins morts
  */
-void Modele::verifierEtatLapins()
+int Modele::verifierEtatLapins()
 {
+	int cpt = 0;
 	for (int i=0; i<tLogiqueMale;++i)
+	{
 		if(lapinsMale_[i].getAge() == lapinsMale_[i].getDureeVie())
 		{
 			lapinsMortsMale_.push_front(&lapinsMale_[i]);
+			++cpt;
 		}
-	
+	}
 	for (int i=0; i<tLogiqueFemelle;++i)
+	{
 		if(lapinsFemelle_[i].getAge() == lapinsFemelle_[i].getDureeVie())
 		{
 			lapinsMortsFemelle_.push_front(&lapinsFemelle_[i]);
+			++cpt;
 		}
+	}
+	return cpt;
 }
 
 /*!
@@ -122,12 +129,14 @@ void Modele::incrementerAge()
  * Parcours du tableau de lapins femelles
  *  La lapine courant donne naissance si elle le peut
  */
-void Modele::naissance()
+int Modele::naissance()
 {
+	int cpt = 0;
 	for(int i=0;i<tLogiqueFemelle;++i)
 	{
-                lapinsFemelle_[i].donnerNaissance();
+		cpt += lapinsFemelle_[i].donnerNaissance();
 	}
+	return cpt;
 }
 
 /*!
@@ -146,36 +155,60 @@ void Modele::naissance()
  */
 int Modele::initializeSimulation()
 {
-	int i = 0;
+	int i = 0,
+		cptNaissances = 0,
+		cptDeces = 0,
+		sizeM = 0,
+		sizeF = 0,
+		totalLapins = 0,
+		malesMatures = 0,
+		femellesMatures = 0,
+		totalLapinsMatures = 0;
+		
 		
 	std::ofstream fichier("simulation.csv");
 	if (!fichier.fail()) {
 				
 		lapinsMale_[0].setDureeVie(9);
 		lapinsFemelle_[0].setDureeVie(9);
+		fichier << "Mois;" << "Nb males début du mois;" << "Nb femelles début du mois;" << "Total lapins début du mois;" << "Nb lapins matures;" << "Nb lapereaux;" << "Naissances;" << "Décès;" <<std::endl;
 		
 		while(i < temps_)
 		{		
-			int sizeM = tLogiqueMale - lapinsMortsMale_.size();
-			int sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
+			sizeM = tLogiqueMale - lapinsMortsMale_.size();
+			sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
+			totalLapins = sizeM+sizeF;
+			
+			malesMatures = getNbMalesMatures();
+			femellesMatures = getNbFemellesMatures();
+			totalLapinsMatures = malesMatures + femellesMatures;
+			
 			
 			//std::cout << toString(i, sizeF+sizeM); 
-			std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
-			fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
+			std::cout << "Mois " << i << " : " << std::endl;
+			std::cout << sizeM << " male(s), " << sizeF << " femelle(s),  total = " << totalLapins << " lapin(s)" << std::endl;
+			std::cout << "    (" << malesMatures << "|" <<femellesMatures << ") lapin(s) mature(s), (" << sizeM - malesMatures << "|" << sizeF - femellesMatures << ") lapereaux" << std::endl;			
+			fichier << i << ";" << sizeM << ";" << sizeF << ";" << totalLapins << ";" << totalLapinsMatures << ";" << totalLapins - totalLapinsMatures << ";";
 			
-			naissance();			
-			verifierEtatLapins();
-			accouplement();
-						
+			//Evolution de l'environnement
+			cptNaissances = naissance();			
+			cptDeces = verifierEtatLapins();
+			accouplement();						
 			incrementerAge();
+						
+			std::cout << "    " << cptNaissances << " lapins sont nés" << std::endl;
+			std::cout << "    " << cptDeces << " lapin(s) mort(s)" << std::endl;		
+			std::cout << "-----------------------------------------------------"  << std::endl;
+			fichier << cptNaissances << ";" << cptDeces << ";" << std::endl;
+			
 			++i;	
 		}
 		fichier.close();
 	}
-	int sizeM = tLogiqueMale - lapinsMortsMale_.size();
-	int sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
+	sizeM = tLogiqueMale - lapinsMortsMale_.size();
+	sizeF = tLogiqueFemelle - lapinsMortsFemelle_.size();
 	//std::cout << toString(i, sizeF+sizeM); 
-	std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
+	//std::cout << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
 	fichier << i << "; " << sizeM << "; " << sizeF << "; " << sizeF+sizeM << std::endl;
 	
 	return sizeF+sizeM;
@@ -204,7 +237,7 @@ float Modele::randomFloat(float a, float b) {
  * \param stdDev ecart type de la moyenne
  * \return réel représentant un nombre aléatoire
  */
-int  Modele::rejectionNormalLaw(int mean , int  stdDev)
+int Modele::rejectionNormalLaw(int mean , int  stdDev)
 {
 	double   u, v, s, nb1 , nb2;
 	
@@ -220,7 +253,6 @@ int  Modele::rejectionNormalLaw(int mean , int  stdDev)
 	nb2 = mean + stdDev * u * s;
 		
 	int choix = rand() % 2;
-	int nb = (choix >= 1 ? nb1 : nb2);
 	
 	return (choix >= 1 ? nb1 : nb2);
 }
@@ -338,6 +370,41 @@ void Modele::setTLogiqueFemelle(int nb)
 {
 	tLogiqueFemelle += nb;
 }
+
+/*!
+ * \brief Getter du nombre de lapins mâles matures
+ * \return entier représentant le nombre de lapins mâles matures
+ */
+int Modele::getNbMalesMatures()
+{
+	int cpt = 0;
+	for(int i=0;i<tLogiqueMale;++i)
+	{
+		if(lapinsMale_[i].getAge() < lapinsMale_[i].getDureeVie() && lapinsMale_[i].isMature())
+		{
+			++cpt;
+		}
+	}
+	return cpt;
+}
+
+/*!
+ * \brief Getter du nombre de lapines matures
+ * \return entier représentant le nombre de lapins matures
+ */
+int Modele::getNbFemellesMatures()
+{
+	int cpt = 0;
+	for(int i=0;i<tLogiqueFemelle;++i)
+	{
+		if(lapinsFemelle_[i].getAge() < lapinsFemelle_[i].getDureeVie() && lapinsFemelle_[i].isMature())
+		{
+			++cpt;
+		}
+	}
+	return cpt;
+}
+
 
 std::list<LapinMale *> Modele::lapinsMortsMale_;
 std::list<LapinFemelle *> Modele::lapinsMortsFemelle_;

@@ -1,0 +1,7 @@
+Lapin.o: Lapin.cpp Lapin.hpp Modele.hpp LapinMale.hpp LapinFemelle.hpp
+LapinFemelle.o: LapinFemelle.cpp LapinFemelle.hpp Lapin.hpp LapinMale.hpp \
+ Modele.hpp
+LapinMale.o: LapinMale.cpp LapinMale.hpp Lapin.hpp LapinFemelle.hpp \
+ Modele.hpp
+Modele.o: Modele.cpp Modele.hpp LapinMale.hpp Lapin.hpp LapinFemelle.hpp
+main.o: main.cpp Lapin.hpp Modele.hpp LapinMale.hpp LapinFemelle.hpp

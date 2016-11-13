@@ -122,7 +122,7 @@ int LapinFemelle::donnerNaissance()
 		//float pourcentageChancesNbEnfants [] = {0.025, 0.025, 0.025, 0.2, 0.2, 0.2, 0.175, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
 		//nbLapins = Modele::histogram(13, pourcentageChancesNbEnfants);
 		float pourcentageChancesNbEnfants [] = {0.25,0.25,0.25,0.25};		
-		int nbLapins = Modele::histogram(4, pourcentageChancesNbEnfants)+3;
+		nbLapins = Modele::histogram(4, pourcentageChancesNbEnfants)+3;
 		float sexe;
 		
 		for(int i=0; i<nbLapins;++i)
@@ -158,9 +158,8 @@ int LapinFemelle::donnerNaissance()
 			}
 		}
 	}
-        enGestation_ = 0;
-	return nbLapins;
-	
+    enGestation_ = 0;
+	return nbLapins;	
 }
 
 /*!

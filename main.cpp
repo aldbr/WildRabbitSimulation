@@ -11,17 +11,18 @@ using namespace std;
 
 int main(void)
 {
-	clock_t begin = clock();
+	//clock_t begin = clock();
 	srand(time(NULL));
-	int somme = 0;
-	for(int i=0; i<100; ++i)
-	{
+	//int somme = 0;
+	//for(int i=0; i<100; ++i)
+	//{
 		Modele m(60);
-		somme += m.initializeSimulation();
-	}
-	std::cout << "moyenne :" << somme/100;
+		m.initializeSimulation();
+		//somme += m.initializeSimulation();
+	//}
+	//std::cout << "moyenne :" << somme/100 << std::endl;
 
-	clock_t end = clock();
+	//clock_t end = clock();
 	
 	/*std::cout << "--> " << double(end - begin) / CLOCKS_PER_SEC << std::endl;
 	std::cout << "size lapin : " << sizeof(Lapin) << std::endl;

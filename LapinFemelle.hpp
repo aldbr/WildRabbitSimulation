@@ -17,11 +17,11 @@ class LapinFemelle : public Lapin
         /*!
          * \brief nombre de portées courant de la femelle.
          */
-	short int nbPortees_;
+		short int nbPortees_;
         /*!
          * \brief nombre de portées maximal de la femelle pour une année de sa vie.
          */
-	short int nbPorteesMax_;
+		short int nbPorteesMax_;
 	
 	public :
         /*!

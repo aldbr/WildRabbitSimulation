@@ -7,7 +7,7 @@
 #include <list>
 #include <string>
 
-#define TMAX 200000
+const int TMAX = 200000;
 
 /*!
  * \brief Classe traitant le modèle de simulation.
@@ -27,39 +27,39 @@ class Modele
         /*!
          * \brief Tableau de lapins mâles.
          */
-	LapinMale *lapinsMale_;
+		LapinMale *lapinsMale_;
         /*!
          * \brief Taille logique du tableau de mâles.
          */
-	static int tLogiqueMale;
+		static int tLogiqueMale;
 	
         /*!
          * \brief Tableau de lapins femelles.
          */
-	LapinFemelle *lapinsFemelle_;
+		LapinFemelle *lapinsFemelle_;
         /*!
          * \brief Taille logique du tableau de femelle.
          */
-	static int tLogiqueFemelle;
+		static int tLogiqueFemelle;
 	
 	
 
         /*!
          * \brief Vérification de la survie des lapins.
          */
-	void verifierEtatLapins();
+		int verifierEtatLapins();
         /*!
          * \brief Accouplement des mâles avec toutes les femelles disponibles.
          */
-	void accouplement();
+		void accouplement();
         /*!
          * \brief Incrément de l'âge de tous les lapins.
          */
-	void incrementerAge();
+		void incrementerAge();
         /*!
          * \brief Naissance des lapereaux par toutes les femelles en gestation.
          */
-	void naissance();
+		int naissance();
 	
 	public :
 
@@ -85,7 +85,7 @@ class Modele
          * \param stdDev ecart type de la moyenne
          * \return réel représentant un nombre aléatoire
          */
-        static int rejectionNormalLaw(int mean , int  stdDev);
+        static int rejectionNormalLaw(int mean , int stdDev);
 
         /*!
          * \brief Génération d'un nombre aléatoire suivant une loi discrète.
@@ -137,6 +137,19 @@ class Modele
          */
         static void setTLogiqueFemelle(int nb);
 
+		/*!
+		 * \brief Getter du nombre de lapins mâles matures
+		 * \return entier représentant le nombre de lapins mâles matures
+		 */
+		int getNbMalesMatures();
+        
+		 /*!
+		 * \brief Getter du nombre de lapines matures
+		 * \return entier représentant le nombre de lapins matures
+		 */
+        int getNbFemellesMatures();
+        
+        
         /*!
          * \brief Liste de pointeurs sur lapins mâles morts.
          */

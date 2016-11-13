@@ -18,7 +18,7 @@ class Lapin
         /*!
          * \brief Durée de vie du lapin.
          */
-	short int dureeVie_;
+		short int dureeVie_;
 		
 	public :
         /*!
