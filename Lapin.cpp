@@ -13,7 +13,10 @@
 Lapin::Lapin() : age_(0)
 {
 	int dureeNormal = Modele::rejectionNormalLaw(9,2) * 12;
-	
+	if(dureeNormal < 0)
+	{
+		dureeNormal = 0;
+	}
 	float pourcentageSurvie [] = {0.8, 0.1, 0.05, 0.025, 0.0125, 0.00625, 0.003125, 0.0015625, 0.00078125, 0.000390625, 0.000195313, 0.000117188, 0.000054688, 0.00001875, 0.000004219, 0.00};
 	int dureeSurvie = (Modele::histogram(15, pourcentageSurvie))*12;
 	

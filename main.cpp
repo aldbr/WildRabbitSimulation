@@ -12,12 +12,12 @@ using namespace std;
 int main(void)
 {
 	//simulation sur une période de 20 ans
-	srand(825);
-	Modele *m = new Modele(120);
-	m->initializeSimulation("simulation10ans.csv");
+	srand(364);
+	Modele *m = new Modele(180);
+	m->initializeSimulation("simulation15ans1.csv");
 	delete m;
-	Modele *m2 = new Modele(120);
-	m->initializeSimulation("simulation10ans.csv");
+	Modele *m2 = new Modele(180);
+	m->initializeSimulation("simulation15ans2.csv");
 	delete m2;
 	
 	//clock_t begin = clock();
