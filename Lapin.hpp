@@ -30,7 +30,7 @@ class Lapin
          * \brief Getter de l'âge du lapin.
          * \return entier correspondant à l'âge du lapin
          */
-	int getAge();
+		int getAge();
         /*!
          * \brief Incrémente l'âge du lapin.
          */
@@ -40,12 +40,12 @@ class Lapin
          * \brief Getter de la durée de vie du lapin.
          * \return entier correspondant à la durée de vie du lapin
          */
-	int getDureeVie();
+		int getDureeVie();
         /*!
          * \brief Setter de la durée de vie du lapin.
          * \param minAn l'âge minimale en année que doit prendre le lapin
          */
-	void setDureeVie(int minAn);
+		void setDureeVie(int minAn);
 };
 
 #endif

@@ -42,6 +42,8 @@ Modele::~Modele()
 	tLogiqueMale = 1;
 }
 
+
+
 /*!
  * \brief Vérification de la survie des lapins.
  * \par Principe :
@@ -153,7 +155,7 @@ int Modele::naissance()
  * Ecriture du dernier nombre de lapins dans le fichier csv
  * \return entier représentant le nombre de lapins mâles et femelles vivant
  */
-int Modele::initializeSimulation()
+int Modele::initializeSimulation(std::string filename)
 {
 	int i = 0,
 		cptNaissances = 0,
@@ -166,11 +168,11 @@ int Modele::initializeSimulation()
 		totalLapinsMatures = 0;
 		
 		
-	std::ofstream fichier("simulation.csv");
+	std::ofstream fichier(filename.c_str());
 	if (!fichier.fail()) {
 				
-		lapinsMale_[0].setDureeVie(9);
-		lapinsFemelle_[0].setDureeVie(9);
+		lapinsMale_[0].setDureeVie(1);
+		lapinsFemelle_[0].setDureeVie(1);
 		fichier << "Mois;" << "Nb males début du mois;" << "Nb femelles début du mois;" << "Total lapins début du mois;" << "Nb lapins matures;" << "Nb lapereaux;" << "Naissances;" << "Décès;" <<std::endl;
 		
 		while(i < temps_)

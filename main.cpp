@@ -11,13 +11,21 @@ using namespace std;
 
 int main(void)
 {
+	//simulation sur une période de 20 ans
+	srand(825);
+	Modele *m = new Modele(120);
+	m->initializeSimulation("simulation10ans.csv");
+	delete m;
+	Modele *m2 = new Modele(120);
+	m->initializeSimulation("simulation10ans.csv");
+	delete m2;
+	
 	//clock_t begin = clock();
-	srand(time(NULL));
 	//int somme = 0;
 	//for(int i=0; i<100; ++i)
 	//{
-		Modele m(60);
-		m.initializeSimulation();
+		//Modele m(60);
+		//m.initializeSimulation();
 		//somme += m.initializeSimulation();
 	//}
 	//std::cout << "moyenne :" << somme/100 << std::endl;

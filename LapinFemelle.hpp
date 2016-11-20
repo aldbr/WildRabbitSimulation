@@ -39,50 +39,50 @@ class LapinFemelle : public Lapin
          * \brief Getter du nombre de portées.
          * \return entier correspondant au nombre de portées de la lapine
          */
-	int getNbPortees();
+		int getNbPortees();
         /*!
          * \brief Incrément du nombre de portées courant.
          */
-	void incrementNbPortees();
+		void incrementNbPortees();
 	
         /*!
          * \brief Getter du nombre de portées maximal.
          * \return le nombre de portées maximal de la lapine pour une année de sa vie
          */
-	int getNbPorteesMax();
+		int getNbPorteesMax();
 
         /*!
          * \brief Setter du nombre de portées maximal.
          */
-	void setNbPorteesMax();
+		void setNbPorteesMax();
 	
         /*!
          * \brief Réponse à la question de la maturité du lapin.
          * \return booléen représentant la réponse à sa maturité
          */
-	void incrementAge();
+		void incrementAge();
         /*!
          * \brief Incrément de l'âge de la lapine.
          */
-	bool isMature();
+		bool isMature();
 	
 
         /*!
          * \brief Donne naissance aux lapereaux.
          * \return entier représentant le nombre de nouveaux nés
          */
-	int donnerNaissance();
+		int donnerNaissance();
 	
         /*!
          * \brief Affichage du lapin femelle.
          * \return chaîne de caractères représentant un lapin femelle
          */
-	std::string toString();
+		std::string toString();
 	
         /*!
          * \brief Réinitialise la durée de vie et l'âge d'un lapin ainsi que son nombre de portées.
          */
-	void reinit();	
+		void reinit();	
 };
 
 #endif

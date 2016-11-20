@@ -7,7 +7,7 @@
 #include <list>
 #include <string>
 
-const int TMAX = 200000;
+const int TMAX = 50000000;
 
 /*!
  * \brief Classe traitant le modèle de simulation.
@@ -72,6 +72,7 @@ class Modele
          * \brief Destructeur du modèle.
          */
         ~Modele();
+        
         /*!
          * \brief Génération uniforme d'un nombre pseudo-aléatoire entre deux bornes.
          * \param a borne minimal
@@ -99,7 +100,7 @@ class Modele
          * \brief Lancement de la simulation.
          * \return entier représentant le nombre de lapins mâles et femelles vivant
          */
-        int initializeSimulation();
+        int initializeSimulation(std::string filename);
 
         /*!
          * \brief Affichage du modèle.
