@@ -7,7 +7,7 @@
 #include <list>
 #include <string>
 
-const int TMAX = 50000000;
+const int TMAX = 1000000;
 
 /*!
  * \brief Classe traitant le modèle de simulation.

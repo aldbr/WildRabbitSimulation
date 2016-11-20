@@ -119,8 +119,6 @@ int LapinFemelle::donnerNaissance()
 	
 	if(enGestation_)
 	{
-		//float pourcentageChancesNbEnfants [] = {0.025, 0.025, 0.025, 0.2, 0.2, 0.2, 0.175, 0.025, 0.025, 0.025, 0.025, 0.025, 0.025};
-		//nbLapins = Modele::histogram(13, pourcentageChancesNbEnfants);
 		float pourcentageChancesNbEnfants [] = {0.25,0.25,0.25,0.25};		
 		nbLapins = Modele::histogram(4, pourcentageChancesNbEnfants)+3;
 		float sexe;
