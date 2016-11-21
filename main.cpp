@@ -58,50 +58,56 @@ float getValTab(int n)
 	return o;
 }
 
-void calculMoyenneRayon()
+void calculMoyenneRayon(const int nbRepli)
 {
-	int somme = 0, moyenne, tab[100];
-	float sn, r;
+	int *tab;
 	
-	std::ofstream fichier("resultat.csv");
-	if (!fichier.fail()) {			
-		fichier << "r,res" << std::endl;
-		for(int i=0; i<100; ++i)
-		{
-			Modele m(60);
-			tab[i] = m.initializeSimulation("lastSimu.csv");
-			fichier << i << "," << tab[i] << std::endl;
-			somme += tab[i];
-		}
-		fichier.close();
-	}
-	moyenne = somme/100;
-	std::cout << "moyenne :" << moyenne << std::endl;
-	
-	somme = 0;
-	for(int i=0; i<100; ++i)
+	tab = new int[nbRepli];
+	if(tab)
 	{
-		somme += pow(tab[i] - moyenne, 2);
+		int somme = 0, moyenne;
+		float sn, r;
+		
+		std::ofstream fichier("resultat.csv");
+		if (!fichier.fail()) {			
+			fichier << "r,res" << std::endl;
+			for(int i=0; i<nbRepli; ++i)
+			{
+				Modele m(60);
+				tab[i] = m.initializeSimulation("lastSimu.csv");
+				fichier << i << "," << tab[i] << std::endl;
+				somme += tab[i];
+			}
+			fichier.close();
+		}
+		moyenne = somme/nbRepli;
+		std::cout << "moyenne :" << moyenne << std::endl;
+		
+		somme = 0;
+		for(int i=0; i<nbRepli; ++i)
+		{
+			somme += pow(tab[i] - moyenne, 2);
+		}
+		sn = (float)somme/(float)(nbRepli-1);
+		std::cout << "estimateur sans biais :" << sn << std::endl;
+		
+		r = 1.990 * sqrt(sn/nbRepli);
+		std::cout << "rayon de confiance :" << r << std::endl;
+		
+		delete [] tab;
 	}
-	sn = (float)somme/(float)(99);
-	std::cout << "estimateur sans biais :" << sn << std::endl;
-	
-	r = 1.990 * sqrt(sn/100);
-	std::cout << "rayon de confiance :" << r << std::endl;
 }
 
-int main(void)
-{
-	srand(364);
-	
 
+void minimisationRepli(float p)
+{
 	std::cout << "Prévision du nombre de réplication minimale à réaliser pour obtenir le même résultat : " << std::endl;
 	std::cout << "Précision à 0.300203" << std::endl;
 	
 	
 	bool fin = 0;
 	int n = 3, m, moyenne,  tab[1000], sommeMoy=0, sommeVar=0, nbRepPlus;
-	float p = 0.300203, sn, r, f=0.5, o;
+	float sn, r, f=0.6, o; //0.300203
 	
 	//moyenne
 	for(int i=0; i<n; ++i)
@@ -145,6 +151,10 @@ int main(void)
 		}
 		std::cin.get();
 		nbRepPlus=f*(m-n);
+		if(nbRepPlus == 0)
+		{
+			nbRepPlus = 1;
+		}
 		std::cout << "nb rep en plus : " << nbRepPlus << std::endl;
 		
 		//moyenne
@@ -177,6 +187,24 @@ int main(void)
 	std::cout << "estimateur sans biais :" << sn << std::endl;
 	std::cout << "rayon de confiance :" << r << std::endl;
 	std::cout << "n :" << n << std::endl;
+}
+
+int main(void)
+{
+	srand(364);
+	int choix;
+	do
+	{
+		std::cout << "Menu : " << std::endl << "1- Simuler une réplication sur 10 ans." << std::endl << "2- Simuler n réplications sur 5 ans." << std::endl << "3- Simuler m réplications minimales pour atteindre un niveau de précision donnée." << std::endl << "4- Quitter" << std::endl; 
+		std::cin >> choix;
+		switch(choix)
+		{
+			case(1):simuDixAns();break;
+			case(2):calculMoyenneRayon(100);break;
+			case(3):minimisationRepli(0.30);break;
+		}
+	}
+	while(choix != 4);
 	
 	return 0;
 }
