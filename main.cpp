@@ -94,20 +94,19 @@ void calculMoyenneRayon(const int nbRepli)
 		r = 1.990 * sqrt(sn/nbRepli);
 		std::cout << "rayon de confiance :" << r << std::endl;
 		
+		std::cout << "p : " << (float)r/(float)moyenne << std::endl;
+		
 		delete [] tab;
 	}
 }
 
 
-void minimisationRepli(float p)
+void minimisationRepli(float p, float f)
 {
-	std::cout << "Prévision du nombre de réplication minimale à réaliser pour obtenir le même résultat : " << std::endl;
-	std::cout << "Précision à 0.300203" << std::endl;
-	
 	
 	bool fin = 0;
 	int n = 3, m, moyenne,  tab[1000], sommeMoy=0, sommeVar=0, nbRepPlus;
-	float sn, r, f=0.6, o; //0.300203
+	float sn, r, o;
 	
 	//moyenne
 	for(int i=0; i<n; ++i)
@@ -128,7 +127,7 @@ void minimisationRepli(float p)
 	std::cout << "estimateur sans biais :" << sn << std::endl;
 	
 	//rayon
-	r = 2 * sqrt(sn/100);
+	r = 2 * sqrt(sn/n);
 	std::cout << "rayon de confiance :" << r << std::endl;
 	
 	
@@ -141,47 +140,50 @@ void minimisationRepli(float p)
 		}
 		std::cout << "o : " << o << " sn/..." << sn/(pow(p*moyenne,2)) << std::endl;
 		std::cin.get();
-		
-		m = n;
-		while(o < sn/(pow(p*moyenne,2)) && !fin)
+		std::cout << "p : " << (float)r/(float)moyenne << std::endl;
+		if(!fin)
 		{
-			++m;
-			o = getValTab(m);
-			std::cout << "m :" << m << std::endl;
+			m = n;
+			while(o < sn/(pow(p*moyenne,2)) && !fin)
+			{
+				++m;
+				o = getValTab(m);
+				std::cout << "m :" << m << std::endl;
+			}
+			std::cin.get();
+			nbRepPlus=f*(m-n);
+			/*if(nbRepPlus == 0)
+			{
+				nbRepPlus = 1;
+			}*/
+			std::cout << "nb rep en plus : " << nbRepPlus << std::endl;
+			
+			//moyenne
+			for(int i=0; i<nbRepPlus; ++i)
+			{
+				Modele m(60);
+				tab[i+n] = m.initializeSimulation("lastSimu.csv");
+				sommeMoy += tab[i+n];
+			}
+			moyenne = sommeMoy/(n+nbRepPlus);
+			std::cout << "moyenne :" << moyenne << std::endl;
+			
+			
+			//sn
+			for(int i=0; i<nbRepPlus; ++i)
+			{
+				sommeVar += pow(tab[i+n] - moyenne, 2);
+			}
+			sn = (float)sommeVar/(float)((n+nbRepPlus)-1);
+			std::cout << "estimateur sans biais :" << sn << std::endl;
+			
+			//rayon
+			r = 2 * sqrt(sn/(n+nbRepPlus));
+			std::cout << "rayon de confiance :" << r << std::endl;
+			
+			n = n+nbRepPlus;
+			std::cin.get();
 		}
-		std::cin.get();
-		nbRepPlus=f*(m-n);
-		if(nbRepPlus == 0)
-		{
-			nbRepPlus = 1;
-		}
-		std::cout << "nb rep en plus : " << nbRepPlus << std::endl;
-		
-		//moyenne
-		for(int i=0; i<nbRepPlus; ++i)
-		{
-			Modele m(60);
-			tab[i+n] = m.initializeSimulation("lastSimu.csv");
-			sommeMoy += tab[i+n];
-		}
-		moyenne = sommeMoy/(n+nbRepPlus);
-		std::cout << "moyenne :" << moyenne << std::endl;
-		
-		
-		//sn
-		for(int i=0; i<nbRepPlus; ++i)
-		{
-			sommeVar += pow(tab[i+n] - moyenne, 2);
-		}
-		sn = (float)sommeVar/(float)((n+nbRepPlus)-1);
-		std::cout << "estimateur sans biais :" << sn << std::endl;
-		
-		//rayon
-		r = 2 * sqrt(sn/100);
-		std::cout << "rayon de confiance :" << r << std::endl;
-		
-		n = n+nbRepPlus;
-		std::cin.get();
 	}
 	std::cout << "moyenne :" << moyenne << std::endl;
 	std::cout << "estimateur sans biais :" << sn << std::endl;
@@ -192,16 +194,17 @@ void minimisationRepli(float p)
 int main(void)
 {
 	srand(364);
-	int choix;
+	int choix, n;
+	float p, f;
 	do
 	{
-		std::cout << "Menu : " << std::endl << "1- Simuler une réplication sur 10 ans." << std::endl << "2- Simuler n réplications sur 5 ans." << std::endl << "3- Simuler m réplications minimales pour atteindre un niveau de précision donnée." << std::endl << "4- Quitter" << std::endl; 
-		std::cin >> choix;
+		std::cout << "Menu : " << std::endl << "1- Simuler une réplication sur 10 ans." << std::endl << "2- Simuler n réplications sur 5 ans." << std::endl << "3- Simuler m réplications minimales pour atteindre un niveau de précision donnée." << std::endl << "4- Quitter" << std::endl << "Choix : "; 
+		std::cin >>choix;
 		switch(choix)
 		{
 			case(1):simuDixAns();break;
-			case(2):calculMoyenneRayon(100);break;
-			case(3):minimisationRepli(0.30);break;
+			case(2):std::cout << "n : "; std::cin >> n;calculMoyenneRayon(n);break;
+			case(3):std::cout << "p : "; std::cin >> p;std::cout << "f : "; std::cin >> f;minimisationRepli(p,f);break;
 		}
 	}
 	while(choix != 4);
